@@ -30,20 +30,20 @@ public class UdpInterface extends AsyncTask{
         try {
             String messageStr = "where are you brewer?";
             int server_port = 5001;
-            MainActivity.s.setBroadcast(true);
+            MainActivity.udpSocket.setBroadcast(true);
             InetAddress bcast = InetAddress.getByName("192.168.1.101");
             int msg_length = messageStr.length();
             byte[] message = messageStr.getBytes();
 
             DatagramPacket p = new DatagramPacket(message, msg_length, bcast, server_port);
-            MainActivity.s.send(p);//properly able to send data. i receive data to server
+            MainActivity.udpSocket.send(p);//properly able to send data. i receive data to server
             Log.i("Brewer", "sent data");
 
             final byte[] receiveData = new byte[1024];
             Log.d("Brewer", "Waiting for Broadcast request in ServerUDP.");
             final DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-            MainActivity.s.setSoTimeout(2000);
-            MainActivity.s.receive(receivePacket);
+            MainActivity.udpSocket.setSoTimeout(2000);
+            MainActivity.udpSocket.receive(receivePacket);
             String req = new String(receivePacket.getData(), 0, receivePacket.getLength());
             Log.d("Brewer", "Received UDP message : "+req+" from: "+receivePacket.getAddress().getHostAddress());
             return req;

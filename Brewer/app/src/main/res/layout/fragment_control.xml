@@ -1,17 +1,49 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" tools:context="erostamas.brewer.ControlFragment">
+    android:layout_height="match_parent" tools:context="erostamas.brewer.ControlFragment"
+    android:background="#010101">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="@string/hello_control_fragment"
-        android:id="@+id/hello" />
+    <TextView
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="00.00"
+        android:id="@+id/current_temp"
+        android:layout_gravity="left|center_vertical"
+        android:numeric="decimal"
+        android:textSize="50sp"
+        android:textColor="#00FF7F"
+        android:layout_below="@+id/increase_setpoint_button" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/increase_setpoint_button"
+        android:src="@mipmap/up_arrow"
+        android:layout_marginStart="38dp"
+        android:layout_marginTop="25dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/setpoint" />
 
     <TextView
-        android:layout_width="353dp"
-        android:layout_height="35dp"
-        android:text="New Text"
-        android:id="@+id/textView"
-        android:layout_gravity="left|center_vertical" />
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="00.00"
+        android:id="@+id/setpoint"
+        android:layout_gravity="left|center_vertical"
+        android:numeric="decimal"
+        android:textSize="50sp"
+        android:textColor="#00FF7F"
+        android:layout_alignTop="@+id/current_temp"
+        android:layout_toEndOf="@+id/current_temp"
+        android:layout_marginStart="54dp" />
 
-</FrameLayout>
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/decrease_setpoint_button"
+        android:src="@mipmap/down_arrow"
+        android:layout_below="@+id/setpoint"
+        android:layout_alignStart="@+id/increase_setpoint_button" />
+
+</RelativeLayout>

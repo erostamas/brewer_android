@@ -23,6 +23,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,15 +39,21 @@ public class MainActivity extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     SectionsPagerAdapter mSectionsPagerAdapter;
-    public static DatagramSocket s;
+    public static DatagramSocket udpSocket;
     ViewPager mViewPager;
     static Context myappcontext;
-    public static String breweraddress = "";
+    public static String brewerAddress = "";
+    public static View controlFragmentView;
+    public static TcpInterface tcpInterface;
+    public static double currentTemperature;
+    public static double setpoint;
+    public static MainActivity mainActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mainActivity = MainActivity.this;
         myappcontext = getApplicationContext();
 
         // Create the adapter that will return a fragment for each of the three
@@ -59,22 +67,34 @@ public class MainActivity extends AppCompatActivity {
         Log.i("Brewer", "main activity created");
 
     }
+    public static void updateUI(){
+        TextView tv = (TextView) controlFragmentView.findViewById(R.id.current_temp);
+        tv.setText("" + currentTemperature);
 
-    public static void connectionEstablished(final Context context)
+        tv = (TextView) controlFragmentView.findViewById(R.id.setpoint);
+        tv.setText("" + setpoint);
+    }
+
+    public static void connectionEstablished()
     {
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(
-                new Runnable()
-                {
+                new Runnable() {
                     @Override
-                    public void run()
-                    {
-                        Toast.makeText(context, "Connected to brewer at: " + breweraddress, Toast.LENGTH_SHORT).show();
-                        TextView tv = (TextView)(((Activity)context).findViewById(R.id.textView));
-                        tv.setText("brewer is at: " + breweraddress);
+                    public void run() {
+                        Toast.makeText(getContext(), "Connected to brewer at: " + MainActivity.brewerAddress, Toast.LENGTH_SHORT).show();
+                        TextView tv = (TextView) controlFragmentView.findViewById(R.id.current_temp);
+                        tv.setText("brewer is at: " + MainActivity.brewerAddress);
                     }
                 }
         );
+        // connect through tcp
+        new connectTask().execute("");
+        while(tcpInterface == null){}
+        tcpInterface.sendMessage("get_temperature");
+        ControlThread controlThread = new ControlThread();
+        controlThread.run();
+        Log.i("Brewer", "sent temp request");
     }
 
     public static Context getContext() {
@@ -82,8 +102,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static void setBrewerAddress(String address) {
-        breweraddress = address;
+        MainActivity.brewerAddress = address;
 
+    }
+
+    public void increaseSetpoint(){
+        MainActivity.tcpInterface.sendMessage("inc_setpoint");
+    }
+
+    public void decreaseSetpoint(){
+        MainActivity.tcpInterface.sendMessage("dec_setpoint");
     }
 
     @Override
@@ -106,6 +134,38 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public static class connectTask extends AsyncTask<String,String,TcpInterface> {
+
+        @Override
+        protected TcpInterface doInBackground(String... message) {
+
+            //we create a TCPClient object and
+            MainActivity.tcpInterface = new TcpInterface(new TcpInterface.OnMessageReceived() {
+                @Override
+                //here the messageReceived method is implemented
+                public void messageReceived(String message) {
+                    //this method calls the onProgressUpdate
+                    if (message.contains("temp:")){
+                        currentTemperature = Double.parseDouble(message.substring(6));
+                    } else if (message.contains("sp:")){
+                        setpoint = Double.parseDouble(message.substring(4));
+                    }
+
+                    mainActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            MainActivity.updateUI();
+                        }
+                    });
+                    Log.i("Brewer", "recieved message: " + message);
+                }
+            });
+            tcpInterface.run();
+
+            return null;
+        }
     }
 
 
@@ -209,6 +269,21 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_control, container, false);
+            controlFragmentView = rootView;
+            final ImageButton inc_button = (ImageButton) rootView.findViewById(R.id.increase_setpoint_button);
+            inc_button.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    mainActivity.increaseSetpoint();
+                }
+            });
+
+            final ImageButton dec_button = (ImageButton) rootView.findViewById(R.id.decrease_setpoint_button);
+            dec_button.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    mainActivity.decreaseSetpoint();
+                }
+            });
+
             return rootView;
         }
 
@@ -216,27 +291,10 @@ public class MainActivity extends AppCompatActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             Log.i("Brewer", "control fragment created");
-            Thread t = new Thread() {
-                @Override
-                public void run() {
-                    try {
-                        s = new DatagramSocket();
-                    } catch (Exception e) {
-                    }
-                    UdpInterface udpinterface = new UdpInterface();
-                    while (breweraddress == "") {
-                        if (udpinterface.getStatus() == AsyncTask.Status.FINISHED || udpinterface.getStatus() == AsyncTask.Status.PENDING){
-                        udpinterface.cancel(true);
-                        udpinterface = new UdpInterface();
-                        udpinterface.execute();}
-                    }
-                    MainActivity.connectionEstablished(getContext());
-
-                }
-            };
-            t.start();
-
-
+            if (MainActivity.brewerAddress == "") {
+                UdpDiscoveryThread udpDiscoveryThread = new UdpDiscoveryThread();
+                udpDiscoveryThread.start();
+            }
         }
     }
 
