@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     public static DatagramSocket udpSocket;
     ViewPager mViewPager;
     static Context myappcontext;
-    public static String brewerAddress = "";
+    public static String brewerAddress = "172.24.1.1";
     public static View controlFragmentView;
     public static TcpInterface tcpInterface;
     public static double currentTemperature;
@@ -66,13 +66,50 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i("Brewer", "main activity created");
 
+        tcpInterface = new TcpInterface(new TcpInterface.OnMessageReceived() {
+            @Override
+            //here the messageReceived method is implemented
+            public void messageReceived(String message) {
+                //this method calls the onProgressUpdate
+                if (message.contains("temp:")){
+                    currentTemperature = Double.parseDouble(message.substring(6));
+                } else if (message.contains("sp:")){
+                    setpoint = Double.parseDouble(message.substring(4));
+                }
+
+                mainActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        MainActivity.updateUI();
+                    }
+                });
+                Log.i("Brewer", "recieved message: " + message);
+            }
+        });
+
     }
     public static void updateUI(){
+
         TextView tv = (TextView) controlFragmentView.findViewById(R.id.current_temp);
         tv.setText("" + currentTemperature);
 
         tv = (TextView) controlFragmentView.findViewById(R.id.setpoint);
         tv.setText("" + setpoint);
+
+        tv = (TextView) controlFragmentView.findViewById(R.id.connection_state);
+
+        if(tcpInterface.connected) {
+            tv.setText("CONNECTED");
+            mainActivity.setTitle("CONNECTED");
+            mainActivity.getSupportActionBar().setDisplayShowHomeEnabled(true);
+            //mainActivity.getSupportActionBar().setDisplayUseLogoEnabled(true);
+            mainActivity.getSupportActionBar().setIcon(R.drawable.connected);
+        } else {
+            tv.setText("DISCONNECTED");
+            mainActivity.setTitle("DISCONNECTED");
+            mainActivity.getSupportActionBar().setDisplayShowHomeEnabled(true);
+            mainActivity.getSupportActionBar().setIcon(R.drawable.disconnected);
+        }
     }
 
     public static void connectionEstablished()
@@ -89,11 +126,8 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
         // connect through tcp
-        new connectTask().execute("");
-        while(tcpInterface == null){}
-        tcpInterface.sendMessage("get_temperature");
-        ControlThread controlThread = new ControlThread();
-        controlThread.run();
+        new ConnectTask().execute("");
+        new ControlTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         Log.i("Brewer", "sent temp request");
     }
 
@@ -136,32 +170,10 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public static class connectTask extends AsyncTask<String,String,TcpInterface> {
+    public static class ConnectTask extends AsyncTask<String,String,TcpInterface> {
 
         @Override
         protected TcpInterface doInBackground(String... message) {
-
-            //we create a TCPClient object and
-            MainActivity.tcpInterface = new TcpInterface(new TcpInterface.OnMessageReceived() {
-                @Override
-                //here the messageReceived method is implemented
-                public void messageReceived(String message) {
-                    //this method calls the onProgressUpdate
-                    if (message.contains("temp:")){
-                        currentTemperature = Double.parseDouble(message.substring(6));
-                    } else if (message.contains("sp:")){
-                        setpoint = Double.parseDouble(message.substring(4));
-                    }
-
-                    mainActivity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            MainActivity.updateUI();
-                        }
-                    });
-                    Log.i("Brewer", "recieved message: " + message);
-                }
-            });
             tcpInterface.run();
 
             return null;
@@ -291,10 +303,7 @@ public class MainActivity extends AppCompatActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             Log.i("Brewer", "control fragment created");
-            if (MainActivity.brewerAddress == "") {
-                UdpDiscoveryThread udpDiscoveryThread = new UdpDiscoveryThread();
-                udpDiscoveryThread.start();
-            }
+                connectionEstablished();
         }
     }
 

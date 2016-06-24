@@ -46,4 +46,14 @@
         android:layout_below="@+id/setpoint"
         android:layout_alignStart="@+id/increase_setpoint_button" />
 
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:textColor="#00FF7F"
+        android:id="@+id/connection_state"
+        android:layout_alignParentEnd="true" />
+
 </RelativeLayout>
