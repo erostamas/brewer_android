@@ -1,30 +1,25 @@
 package erostamas.brewer;
 
 import java.net.DatagramSocket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     public static double currentTemperature;
     public static double setpoint;
     public static MainActivity mainActivity;
+    public static List<String> curves = new ArrayList<String>();
+    public static ArrayAdapter curvelistadapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,13 +67,27 @@ public class MainActivity extends AppCompatActivity {
             @Override
             //here the messageReceived method is implemented
             public void messageReceived(String message) {
-                //this method calls the onProgressUpdate
-                if (message.contains("temp:")){
-                    currentTemperature = Double.parseDouble(message.substring(6));
-                } else if (message.contains("sp:")){
-                    setpoint = Double.parseDouble(message.substring(4));
-                }
-
+                try {
+                    Log.i("msg", "recieved message: " + message);
+                    //this method calls the onProgressUpdate
+                    if (message.contains("temp:")) {
+                        currentTemperature = Double.parseDouble(message.substring(6));
+                    } else if (message.contains("sp:")) {
+                        setpoint = Double.parseDouble(message.substring(4));
+                    } else if (message.contains("curves:")) {
+                        String curves_str = message.substring(8);
+                        String[] separated = curves_str.split(";");
+                        for (int i = 0; i < separated.length; i++) {
+                            curves.add(separated[i]);
+                        }
+                        mainActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                curvelistadapter.notifyDataSetChanged();
+                            }
+                        });
+                    }
+                } catch (Exception e) {}
                 mainActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -196,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             if (position != 0) {
-                return PlaceholderFragment.newInstance(position + 1);
+                return CurveListFragment.newInstance(position + 1);
             } else {
             return ControlFragment.newInstance(position);}
         }
@@ -219,91 +230,6 @@ public class MainActivity extends AppCompatActivity {
                     return getString(R.string.title_section3).toUpperCase(l);
             }
             return null;
-        }
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            return rootView;
-        }
-    }
-
-    public static class ControlFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static ControlFragment newInstance(int sectionNumber) {
-            ControlFragment fragment = new ControlFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public ControlFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_control, container, false);
-            controlFragmentView = rootView;
-            final ImageButton inc_button = (ImageButton) rootView.findViewById(R.id.increase_setpoint_button);
-            inc_button.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    mainActivity.increaseSetpoint();
-                }
-            });
-
-            final ImageButton dec_button = (ImageButton) rootView.findViewById(R.id.decrease_setpoint_button);
-            dec_button.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    mainActivity.decreaseSetpoint();
-                }
-            });
-
-            return rootView;
-        }
-
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            Log.i("Brewer", "control fragment created");
-                connectionEstablished();
         }
     }
 

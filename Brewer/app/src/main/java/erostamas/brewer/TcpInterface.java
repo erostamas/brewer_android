@@ -77,6 +77,7 @@ public class TcpInterface {
             //receive the message which the server sends back
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             msg_recieved = System.currentTimeMillis();
+            sendMessage("get_curves");
 
         } catch (IOException e){
             Log.e("TCP", "C: Error", e);
@@ -107,6 +108,7 @@ public class TcpInterface {
         try {
             //in this while the client listens for the messages sent by the server
             while (mRun) {
+                Log.i("timing", "jytdfjtd");
                 Log.i("timing", "msg recieved = " + msg_recieved);
                 Log.i("timing", "now = " + System.currentTimeMillis());
                 if (!connected || (System.currentTimeMillis() - msg_recieved > 3000)) {
