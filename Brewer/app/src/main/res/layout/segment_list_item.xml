@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <TextView
+        android:text="Temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="19dp"
+        android:layout_marginTop="12dp"
+        android:id="@+id/segment_temp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textAlignment="viewStart" />
+
+    <TextView
+        android:text="Duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="28dp"
+        android:id="@+id/segment_duration"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textAlignment="viewEnd"
+        android:layout_alignBaseline="@+id/segment_temp"
+        android:layout_alignBottom="@+id/segment_temp"
+        android:layout_alignParentEnd="true" />
+</RelativeLayout>

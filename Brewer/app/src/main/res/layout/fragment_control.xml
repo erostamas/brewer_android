@@ -5,15 +5,16 @@
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:text="00.00"
         android:id="@+id/current_temp"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/increase_setpoint_button"
         android:layout_gravity="left|center_vertical"
+        android:fontFamily="serif-monospace"
         android:numeric="decimal"
-        android:textSize="50sp"
+        android:text="00.00"
         android:textColor="#00FF7F"
-        android:layout_below="@+id/increase_setpoint_button" />
+        android:textSize="50sp" />
 
     <ImageButton
         android:layout_width="wrap_content"

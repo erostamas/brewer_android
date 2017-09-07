@@ -1,14 +1,20 @@
 package erostamas.brewer;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
+import static erostamas.brewer.MainActivity.SIMULATION_MODE;
+import static erostamas.brewer.MainActivity.current_curve;
 import static erostamas.brewer.MainActivity.curvelistadapter;
+import static erostamas.brewer.MainActivity.mainActivity;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -39,10 +45,20 @@ public class CurveListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_curves, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.curves_list);
-        curvelistadapter = new ArrayAdapter<String>(MainActivity.mainActivity,
-                android.R.layout.simple_list_item_1,
-                MainActivity.curves);
+        curvelistadapter = new CurveListAdapter(MainActivity.curves);
         listView.setAdapter(curvelistadapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                current_curve = curvelistadapter.curvenames.get(i);
+                Log.i("segments", "current_curve set to: " + current_curve);
+                Intent intent = new Intent(getActivity(), DisplaySegmentsActivity.class);
+                startActivity(intent);
+            }
+        });
+        if(SIMULATION_MODE) {
+            mainActivity.simulateCurves();
+        }
         return rootView;
     }
 

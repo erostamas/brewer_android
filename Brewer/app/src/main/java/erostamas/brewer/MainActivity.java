@@ -2,7 +2,7 @@ package erostamas.brewer;
 
 import java.net.DatagramSocket;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Locale;
 
 import android.content.Context;
@@ -19,7 +19,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,18 +32,20 @@ public class MainActivity extends AppCompatActivity {
      * may be best to switch to a
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
+    public static boolean SIMULATION_MODE = true;
     SectionsPagerAdapter mSectionsPagerAdapter;
     public static DatagramSocket udpSocket;
     ViewPager mViewPager;
     static Context myappcontext;
     public static String brewerAddress = "172.24.1.1";
     public static View controlFragmentView;
-    public static TcpInterface tcpInterface;
     public static double currentTemperature;
     public static double setpoint;
     public static MainActivity mainActivity;
-    public static List<String> curves = new ArrayList<String>();
-    public static ArrayAdapter curvelistadapter;
+    public static HashMap<String, ArrayList<Segment>> curves = new HashMap<>();
+    public static CurveListAdapter curvelistadapter;
+    public static SegmentListAdapter segmentlistadapter;
+    public static String current_curve;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mainActivity = MainActivity.this;
         myappcontext = getApplicationContext();
-
+        curves.clear();
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -63,41 +64,6 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i("Brewer", "main activity created");
 
-        tcpInterface = new TcpInterface(new TcpInterface.OnMessageReceived() {
-            @Override
-            //here the messageReceived method is implemented
-            public void messageReceived(String message) {
-                try {
-                    Log.i("msg", "recieved message: " + message);
-                    //this method calls the onProgressUpdate
-                    if (message.contains("temp:")) {
-                        currentTemperature = Double.parseDouble(message.substring(6));
-                    } else if (message.contains("sp:")) {
-                        setpoint = Double.parseDouble(message.substring(4));
-                    } else if (message.contains("curves:")) {
-                        String curves_str = message.substring(8);
-                        String[] separated = curves_str.split(";");
-                        for (int i = 0; i < separated.length; i++) {
-                            curves.add(separated[i]);
-                        }
-                        mainActivity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                curvelistadapter.notifyDataSetChanged();
-                            }
-                        });
-                    }
-                } catch (Exception e) {}
-                mainActivity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        MainActivity.updateUI();
-                    }
-                });
-                Log.i("Brewer", "recieved message: " + message);
-            }
-        });
-
     }
     public static void updateUI(){
 
@@ -106,57 +72,6 @@ public class MainActivity extends AppCompatActivity {
 
         tv = (TextView) controlFragmentView.findViewById(R.id.setpoint);
         tv.setText("" + setpoint);
-
-        tv = (TextView) controlFragmentView.findViewById(R.id.connection_state);
-
-        if(tcpInterface.connected) {
-            tv.setText("CONNECTED");
-            mainActivity.setTitle("CONNECTED");
-            mainActivity.getSupportActionBar().setDisplayShowHomeEnabled(true);
-            //mainActivity.getSupportActionBar().setDisplayUseLogoEnabled(true);
-            mainActivity.getSupportActionBar().setIcon(R.drawable.connected);
-        } else {
-            tv.setText("DISCONNECTED");
-            mainActivity.setTitle("DISCONNECTED");
-            mainActivity.getSupportActionBar().setDisplayShowHomeEnabled(true);
-            mainActivity.getSupportActionBar().setIcon(R.drawable.disconnected);
-        }
-    }
-
-    public static void connectionEstablished()
-    {
-        Handler handler = new Handler(Looper.getMainLooper());
-        handler.post(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getContext(), "Connected to brewer at: " + MainActivity.brewerAddress, Toast.LENGTH_SHORT).show();
-                        TextView tv = (TextView) controlFragmentView.findViewById(R.id.current_temp);
-                        tv.setText("brewer is at: " + MainActivity.brewerAddress);
-                    }
-                }
-        );
-        // connect through tcp
-        new ConnectTask().execute("");
-        new ControlTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        Log.i("Brewer", "sent temp request");
-    }
-
-    public static Context getContext() {
-        return myappcontext;
-    }
-
-    public static void setBrewerAddress(String address) {
-        MainActivity.brewerAddress = address;
-
-    }
-
-    public void increaseSetpoint(){
-        MainActivity.tcpInterface.sendMessage("inc_setpoint");
-    }
-
-    public void decreaseSetpoint(){
-        MainActivity.tcpInterface.sendMessage("dec_setpoint");
     }
 
     @Override
@@ -179,16 +94,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public static class ConnectTask extends AsyncTask<String,String,TcpInterface> {
-
-        @Override
-        protected TcpInterface doInBackground(String... message) {
-            tcpInterface.run();
-
-            return null;
-        }
     }
 
 
@@ -233,5 +138,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
+    public void simulateCurves() {
+        ArrayList<Segment> curve = new ArrayList<Segment>();
+        curve.add(new Segment(65,3));
+        curve.add(new Segment(70,5));
+        curve.add(new Segment(45.5,5));
+        curves.put("curve 1", curve);
+        curves.put("curve 2", curve);
+        curvelistadapter.notifyDataSetChanged();
+    }
 }

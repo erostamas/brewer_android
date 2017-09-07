@@ -9,6 +9,7 @@
 
     <string name="action_settings">Settings</string>
 
-<!-- TODO: Remove or change this placeholder text -->
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_control_fragment">Hello control fragment</string>
+    <string name="title_activity_add_segment">AddSegmentActivity</string>
 </resources>
