@@ -61,14 +61,18 @@ public class ControlFragment extends Fragment {
         final ImageButton inc_button = (ImageButton) rootView.findViewById(R.id.increase_setpoint_button);
         inc_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //MainActivity.mainActivity.increaseSetpoint();
+                UdpMessage msg = new UdpMessage(mainActivity.brewerAddress, 50001, "inc_setpoint");
+                UdpSender sender = new UdpSender();
+                sender.execute(msg);
             }
         });
 
         final ImageButton dec_button = (ImageButton) rootView.findViewById(R.id.decrease_setpoint_button);
         dec_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //MainActivity.mainActivity.decreaseSetpoint();
+                UdpMessage msg = new UdpMessage(mainActivity.brewerAddress, 50001, "dec_setpoint");
+                UdpSender sender = new UdpSender();
+                sender.execute(msg);
             }
         });
 
@@ -84,8 +88,10 @@ public class ControlFragment extends Fragment {
         for (int k = 0; k < 4; k++) {
             addressBytes[k] = (byte) ((dhcp.gateway >> k * 8) & 0xFF);
         }
+
         try {
             final InetAddress brewerIpAddress = InetAddress.getByAddress(addressBytes);
+            mainActivity.brewerAddress = brewerIpAddress.getHostAddress();
             scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
 
             scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {

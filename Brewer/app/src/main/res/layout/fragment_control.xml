@@ -1,60 +1,108 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" tools:context="erostamas.brewer.ControlFragment"
-    android:background="#010101">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorPrimary"
+    tools:context="erostamas.brewer.ControlFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:id="@+id/current_temp"
-        android:layout_width="160dp"
+        android:id="@+id/current_mode"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/increase_setpoint_button"
-        android:layout_gravity="left|center_vertical"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:text="MODE: ######"
+        android:textColor="@android:color/background_light" />
+
+    <TextView
+        android:id="@+id/current_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:fontFamily="serif-monospace"
         android:numeric="decimal"
-        android:text="00.00"
-        android:textColor="#00FF7F"
+        android:text="-###.#"
+        android:textAlignment="center"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="50sp"
+        android:layout_below="@+id/current_mode"
+        android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/setpoint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/increase_setpoint_button"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="left|center_vertical"
+        android:layout_toEndOf="@+id/current_mode"
+        android:fontFamily="serif-monospace"
+        android:gravity="center"
+        android:numeric="decimal"
+        android:text="-###.#"
+        android:textAlignment="center"
+        android:textColor="@android:color/holo_blue_dark"
         android:textSize="50sp" />
 
     <ImageButton
+        android:id="@+id/increase_setpoint_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/increase_setpoint_button"
-        android:src="@mipmap/up_arrow"
-        android:layout_marginStart="38dp"
-        android:layout_marginTop="25dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/setpoint" />
-
-    <TextView
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:text="00.00"
-        android:id="@+id/setpoint"
-        android:layout_gravity="left|center_vertical"
-        android:numeric="decimal"
-        android:textSize="50sp"
-        android:textColor="#00FF7F"
-        android:layout_alignTop="@+id/current_temp"
-        android:layout_toEndOf="@+id/current_temp"
-        android:layout_marginStart="54dp" />
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="0dp"
+        android:background="@null"
+        android:src="@mipmap/increase"
+        android:layout_below="@+id/current_temp"
+        android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true"/>
 
     <ImageButton
+        android:id="@+id/decrease_setpoint_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/decrease_setpoint_button"
-        android:src="@mipmap/down_arrow"
+        android:src="@mipmap/decrease"
+        android:background="@null"
         android:layout_below="@+id/setpoint"
-        android:layout_alignStart="@+id/increase_setpoint_button" />
+        android:layout_centerHorizontal="true"/>
 
     <TextView
-        android:text="TextView"
+        android:id="@+id/current_output"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="left|center_vertical"
+        android:fontFamily="serif-monospace"
+        android:gravity="center"
+        android:numeric="decimal"
+        android:text="###"
+        android:textAlignment="center"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="50sp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:textColor="#00FF7F"
-        android:id="@+id/connection_state"
-        android:layout_alignParentEnd="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="51dp" />
+
+    <TextView
+        android:id="@+id/current_temp_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="°C"
+        android:textColor="@android:color/background_light"
+        android:textSize="30sp"
+        android:layout_alignBaseline="@+id/current_temp"
+        android:layout_alignBottom="@+id/current_temp"
+        android:layout_alignStart="@+id/setpoint_unit" />
+
+    <TextView
+        android:id="@+id/setpoint_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="°C"
+        android:textColor="@android:color/background_light"
+        android:textSize="30sp"
+        android:layout_alignBaseline="@+id/setpoint"
+        android:layout_alignBottom="@+id/setpoint"
+        android:layout_toEndOf="@+id/setpoint" />
 
 </RelativeLayout>

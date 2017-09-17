@@ -3,6 +3,7 @@ package erostamas.brewer;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.util.Xml;
+import android.widget.TextView;
 
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
@@ -31,13 +32,12 @@ import static erostamas.brewer.MainActivity.mainActivity;
  * Created by etamero on 2017.09.06..
  */
 
-public class ProcessDataDownloader extends AsyncTask <String, Integer, Long> {
-
-    Double _temp;
+public class ProcessDataDownloader extends AsyncTask <String, Integer, ProcessData> {
 
     @Override
-    protected Long doInBackground(String... urls) {
+    protected ProcessData doInBackground(String... urls) {
         try {
+            ProcessData ret = new ProcessData();
             Log.i("brewer", "downloading xml at: " + urls[0]);
             URL url = new URL(urls[0]);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -46,7 +46,7 @@ public class ProcessDataDownloader extends AsyncTask <String, Integer, Long> {
             urlConnection.connect();
             BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(urlConnection.getInputStream(),"UTF-8"));
             StringBuilder buf = new StringBuilder(512);
-            String line = null;
+            String line;
             while((line=reader.readLine())!=null){
                 buf.append(line).append("\n");
             }
@@ -64,8 +64,13 @@ public class ProcessDataDownloader extends AsyncTask <String, Integer, Long> {
                     }
                     String name = parser.getName();
                     if (name.equals("temp")) {
-                        _temp = Double.parseDouble(readText(parser));
-                        Log.i("brewer", "temp: " + Double.toString(_temp));
+                        ret.setTemperature(Double.parseDouble(readText(parser)));
+                    } else if (name.equals("setpoint")) {
+                        ret.setSetpoint(Double.parseDouble(readText(parser)));
+                    } else if (name.equals("mode")) {
+                        ret.setMode(readText(parser));
+                    } else if (name.equals("output")) {
+                        ret.setOutput(Integer.parseInt(readText(parser)));
                     } else {
                         skip(parser);
                     }
@@ -73,11 +78,12 @@ public class ProcessDataDownloader extends AsyncTask <String, Integer, Long> {
 
             } finally {
                 stream.close();
+                return ret;
             }
         } catch (Exception e) {
             Log.e("brewer", "Exception during download of data xml: " + e.getMessage());
+            return null;
         }
-        return null;
     }
 
     private String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
@@ -107,8 +113,13 @@ public class ProcessDataDownloader extends AsyncTask <String, Integer, Long> {
     }
 
     @Override
-    protected void onPostExecute(Long aLong) {
-        mainActivity.currentTemperature = _temp;
-        mainActivity.updateUI();
+    protected void onPostExecute(ProcessData processData) {
+        if (processData != null && processData.getMode() != null) {
+            mainActivity.currentTemperature = processData.getTemperature();
+            mainActivity.currentMode = processData.getMode();
+            mainActivity.currentOutput = processData.getOutput();
+            mainActivity.currentSetpoint = processData.getSetpoint();
+            mainActivity.updateUI();
+        }
     }
 }

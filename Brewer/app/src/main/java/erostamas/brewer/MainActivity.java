@@ -40,7 +40,9 @@ public class MainActivity extends AppCompatActivity {
     public static String brewerAddress = "172.24.1.1";
     public static View controlFragmentView;
     public static double currentTemperature;
-    public static double setpoint;
+    public static String currentMode;
+    public static double currentSetpoint;
+    public static double currentOutput;
     public static MainActivity mainActivity;
     public static HashMap<String, ArrayList<Segment>> curves = new HashMap<>();
     public static CurveListAdapter curvelistadapter;
@@ -68,10 +70,16 @@ public class MainActivity extends AppCompatActivity {
     public static void updateUI(){
 
         TextView tv = (TextView) controlFragmentView.findViewById(R.id.current_temp);
-        tv.setText("" + currentTemperature);
+        tv.setText(String.format("%.1f", currentTemperature));
+
+        tv = (TextView) controlFragmentView.findViewById(R.id.current_mode);
+        tv.setText("MODE: " + currentMode);
 
         tv = (TextView) controlFragmentView.findViewById(R.id.setpoint);
-        tv.setText("" + setpoint);
+        tv.setText(String.format("%.1f", currentSetpoint));
+
+        tv = (TextView) controlFragmentView.findViewById(R.id.current_output);
+        tv.setText("" + currentOutput);
     }
 
     @Override
