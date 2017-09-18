@@ -22,6 +22,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import erostamas.brewer.Views.TemperatureGauge;
+
 public class MainActivity extends AppCompatActivity {
 
     /**
@@ -69,17 +71,17 @@ public class MainActivity extends AppCompatActivity {
     }
     public static void updateUI(){
 
-        TextView tv = (TextView) controlFragmentView.findViewById(R.id.current_temp);
-        tv.setText(String.format("%.1f", currentTemperature));
+        TemperatureGauge tempview = (TemperatureGauge) controlFragmentView.findViewById(R.id.current_temp);
+        tempview.set(currentTemperature);
 
-        tv = (TextView) controlFragmentView.findViewById(R.id.current_mode);
+        TextView tv = (TextView) controlFragmentView.findViewById(R.id.current_mode);
         tv.setText("MODE: " + currentMode);
 
-        tv = (TextView) controlFragmentView.findViewById(R.id.setpoint);
-        tv.setText(String.format("%.1f", currentSetpoint));
+        TemperatureGauge setpointview = (TemperatureGauge) controlFragmentView.findViewById(R.id.setpoint);
+        setpointview.set(currentSetpoint);
 
-        tv = (TextView) controlFragmentView.findViewById(R.id.current_output);
-        tv.setText("" + currentOutput);
+        //tv = (TextView) controlFragmentView.findViewById(R.id.current_output);
+        //tv.setText("" + currentOutput);
     }
 
     @Override
