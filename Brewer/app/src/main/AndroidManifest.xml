@@ -37,6 +37,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="erostamas.brewer.DisplaySegmentsActivity" />
         </activity>
+        <activity
+            android:name=".AddCurveActivity"
+            android:label="@string/title_activity_add_curve"
+            android:parentActivityName=".DisplaySegmentsActivity">
+        </activity>
     </application>
 
 </manifest>

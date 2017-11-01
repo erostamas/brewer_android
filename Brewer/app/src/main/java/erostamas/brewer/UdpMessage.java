@@ -6,7 +6,7 @@ package erostamas.brewer;
 
 public class UdpMessage {
 
-    UdpMessage(String address, int port, String message) {
+    public UdpMessage(String address, int port, String message) {
         _address = address;
         _port = port;
         _message = message;

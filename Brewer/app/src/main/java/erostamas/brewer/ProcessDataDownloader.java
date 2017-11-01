@@ -65,12 +65,17 @@ public class ProcessDataDownloader extends AsyncTask <String, Integer, ProcessDa
                     String name = parser.getName();
                     if (name.equals("temp")) {
                         ret.setTemperature(Double.parseDouble(readText(parser)));
+                        Log.i("brewer", "temp found: " + ret.getTemperature());
                     } else if (name.equals("setpoint")) {
                         ret.setSetpoint(Double.parseDouble(readText(parser)));
                     } else if (name.equals("mode")) {
                         ret.setMode(readText(parser));
                     } else if (name.equals("output")) {
                         ret.setOutput(Integer.parseInt(readText(parser)));
+                    } else if (name.equals("nextsetpoint")) {
+                        ret.setNextSetpoint(Integer.parseInt(readText(parser)));
+                    } else if (name.equals("timetonextsegment")) {
+                        ret.setTimeToNextSetpoint(Integer.parseInt(readText(parser)));
                     } else {
                         skip(parser);
                     }
@@ -114,11 +119,13 @@ public class ProcessDataDownloader extends AsyncTask <String, Integer, ProcessDa
 
     @Override
     protected void onPostExecute(ProcessData processData) {
-        if (processData != null && processData.getMode() != null) {
+        if (processData != null) {
             mainActivity.currentTemperature = processData.getTemperature();
             mainActivity.currentMode = processData.getMode();
             mainActivity.currentOutput = processData.getOutput();
             mainActivity.currentSetpoint = processData.getSetpoint();
+            mainActivity.nextSetpoint = processData.getNextSetpoint();
+            mainActivity.timeToNextSetpoint = processData.getTimeToNextSetpoint();
             mainActivity.updateUI();
         }
     }

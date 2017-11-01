@@ -1,14 +1,10 @@
 package erostamas.brewer;
 
-import java.net.DatagramSocket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 
 import android.content.Context;
-import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,10 +15,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import erostamas.brewer.Views.TemperatureGauge;
+import erostamas.brewer.Views.DataDisplay;
+import erostamas.brewer.Views.Gauge;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
      */
     public static boolean SIMULATION_MODE = true;
     SectionsPagerAdapter mSectionsPagerAdapter;
-    public static DatagramSocket udpSocket;
     ViewPager mViewPager;
     static Context myappcontext;
     public static String brewerAddress = "172.24.1.1";
@@ -44,7 +38,9 @@ public class MainActivity extends AppCompatActivity {
     public static double currentTemperature;
     public static String currentMode;
     public static double currentSetpoint;
-    public static double currentOutput;
+    public static int currentOutput;
+    public static double nextSetpoint;
+    public static int timeToNextSetpoint;
     public static MainActivity mainActivity;
     public static HashMap<String, ArrayList<Segment>> curves = new HashMap<>();
     public static CurveListAdapter curvelistadapter;
@@ -57,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mainActivity = MainActivity.this;
         myappcontext = getApplicationContext();
-        curves.clear();
+        //curves.clear();
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -71,17 +67,27 @@ public class MainActivity extends AppCompatActivity {
     }
     public static void updateUI(){
 
-        TemperatureGauge tempview = (TemperatureGauge) controlFragmentView.findViewById(R.id.current_temp);
+        Gauge tempview = (Gauge) controlFragmentView.findViewById(R.id.current_temp);
         tempview.set(currentTemperature);
 
-        TextView tv = (TextView) controlFragmentView.findViewById(R.id.current_mode);
-        tv.setText("MODE: " + currentMode);
+        DataDisplay modeview = (DataDisplay) controlFragmentView.findViewById(R.id.current_mode);
+        modeview.set(currentMode);
 
-        TemperatureGauge setpointview = (TemperatureGauge) controlFragmentView.findViewById(R.id.setpoint);
+        Gauge setpointview = (Gauge) controlFragmentView.findViewById(R.id.setpoint);
         setpointview.set(currentSetpoint);
 
-        //tv = (TextView) controlFragmentView.findViewById(R.id.current_output);
-        //tv.setText("" + currentOutput);
+        DataDisplay outputview = (DataDisplay) controlFragmentView.findViewById(R.id.current_output);
+        outputview.set(Integer.toString(currentOutput));
+
+        DataDisplay nextsetpointview = (DataDisplay) controlFragmentView.findViewById(R.id.next_setpoint);
+        DataDisplay timetonextsetpointview = (DataDisplay) controlFragmentView.findViewById(R.id.time_to_next_segment);
+        if (currentMode == "AUTO") {
+            nextsetpointview.set(String.format("%.1f", nextSetpoint));
+            timetonextsetpointview.set(Double.toString(timeToNextSetpoint));
+        } else {
+            nextsetpointview.set("");
+            timetonextsetpointview.set("");
+        }
     }
 
     @Override
