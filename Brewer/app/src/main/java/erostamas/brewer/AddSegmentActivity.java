@@ -1,5 +1,6 @@
 package erostamas.brewer;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,6 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.NumberPicker;
+import android.widget.TimePicker;
 
 import java.util.ArrayList;
 
@@ -20,12 +23,27 @@ import static erostamas.brewer.MainActivity.segmentlistadapter;
 
 public class AddSegmentActivity extends AppCompatActivity {
 
+    private String _curveName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_segment);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Intent intent = getIntent();
+        _curveName = intent.getStringExtra(DisplayCurvesFragment.CURVE_NAME);
         setTitle("Add new segment");
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        NumberPicker hourPicker = (NumberPicker)findViewById(R.id.hourPicker);
+        hourPicker.setMinValue(0);
+        hourPicker.setMaxValue(4);
+
+        NumberPicker minutePicker = (NumberPicker)findViewById(R.id.minutePicker);
+        minutePicker.setMinValue(0);
+        minutePicker.setMaxValue(59);
+
+        NumberPicker numberPicker = (NumberPicker) findViewById(R.id.tempPicker);
+        numberPicker.setMinValue(0);
+        numberPicker.setMaxValue(100);
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -45,16 +63,30 @@ public class AddSegmentActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
 
         if (item.getTitle() == "Save") {
-            EditText tempText = (EditText)findViewById(R.id.set_temp_textbox);
-            EditText timeText = (EditText)findViewById(R.id.set_duration_textbox);
-            double temp = Double.parseDouble(tempText.getText().toString());
-            long time = Long.parseLong(timeText.getText().toString());
-            MainActivity.curves.get(MainActivity.current_curve).add(new Segment(temp, time));
-            MainActivity.segmentlistadapter.notifyDataSetChanged();
+            NumberPicker hourPicker = (NumberPicker)findViewById(R.id.hourPicker);
+            NumberPicker minutePicker = (NumberPicker)findViewById(R.id.minutePicker);
+            long time = hourPicker.getValue() * 3600 + minutePicker.getValue() * 60;
+
+            NumberPicker tempPicker = (NumberPicker) findViewById(R.id.tempPicker);
+            double temp = tempPicker.getValue();
+            DisplayCurvesFragment.curves.get(_curveName).add(new Segment(temp, time));
+            DisplaySegmentsActivity.segmentListAdapter.notifyDataSetChanged();
+            this.finish();
             return true;
+        } else if (item.getItemId() == android.R.id.home) {
+                this.finish();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        getFragmentManager().popBackStack();
+
     }
 
 }

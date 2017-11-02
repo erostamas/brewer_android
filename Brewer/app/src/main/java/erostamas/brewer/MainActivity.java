@@ -1,10 +1,10 @@
 package erostamas.brewer;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Locale;
 
 import android.content.Context;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -42,10 +42,10 @@ public class MainActivity extends AppCompatActivity {
     public static double nextSetpoint;
     public static int timeToNextSetpoint;
     public static MainActivity mainActivity;
-    public static HashMap<String, ArrayList<Segment>> curves = new HashMap<>();
     public static CurveListAdapter curvelistadapter;
     public static SegmentListAdapter segmentlistadapter;
     public static String current_curve;
+    private static int position = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,16 +53,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mainActivity = MainActivity.this;
         myappcontext = getApplicationContext();
-        //curves.clear();
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
-        Log.i("Brewer", "main activity created");
 
     }
     public static void updateUI(){
@@ -112,6 +107,29 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        position = mViewPager.getCurrentItem();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mViewPager.setCurrentItem(position);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        position = mViewPager.getCurrentItem();
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        mViewPager.setCurrentItem(position);
+    }
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -128,14 +146,14 @@ public class MainActivity extends AppCompatActivity {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             if (position != 0) {
-                return CurveListFragment.newInstance(position + 1);
+                return DisplayCurvesFragment.newInstance(position + 1);
             } else {
             return ControlFragment.newInstance(position);}
         }
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
+            // Show 2 total pages.
             return 2;
         }
 
@@ -154,13 +172,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void simulateCurves() {
-        ArrayList<Segment> curve = new ArrayList<Segment>();
-        curve.add(new Segment(65,3));
-        curve.add(new Segment(70,5));
-        curve.add(new Segment(45.5,5));
-        curves.put("curve 1", curve);
-        curves.put("curve 2", curve);
-        curvelistadapter.notifyDataSetChanged();
-    }
 }

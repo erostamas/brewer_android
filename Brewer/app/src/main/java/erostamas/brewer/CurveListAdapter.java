@@ -18,27 +18,20 @@ import java.util.Map;
  */
 
 public class CurveListAdapter extends BaseAdapter {
-    public ArrayList<String> curvenames = new ArrayList<String>();
-    HashMap<String, ArrayList<Segment>> map;
-    public CurveListAdapter(HashMap<String, ArrayList<Segment>> _map) {
-        map = _map;
-        for (String curve : map.keySet()) {
-            curvenames.add(curve);
-            Log.i("mapadapter", "added curvename: " + curve);
-        }
-        Collections.sort(curvenames);
+
+    public CurveListAdapter() {
         notifyDataSetChanged();
     }
+    private static ArrayList<String> curveNames = new ArrayList<>();
 
     @Override
     public int getCount() {
-        Log.i("mapadapter", "getcount called: " + curvenames.size());
-        return curvenames.size();
+        return curveNames.size();
     }
 
     @Override
     public String getItem(int i) {
-        return curvenames.get(i);
+        return curveNames.get(i);
     }
 
     @Override
@@ -62,11 +55,11 @@ public class CurveListAdapter extends BaseAdapter {
 
     @Override
     public void notifyDataSetChanged() {
-        for (String curve : map.keySet()) {
-            curvenames.add(curve);
-            Log.i("mapadapter", "added curvename: " + curve);
+        curveNames.clear();
+        for (String curve : DisplayCurvesFragment.curves.keySet()) {
+            curveNames.add(curve);
         }
-        Collections.sort(curvenames);
+        Collections.sort(curveNames);
         super.notifyDataSetChanged();
     }
 }

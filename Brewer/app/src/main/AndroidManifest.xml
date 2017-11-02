@@ -22,24 +22,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DisplaySegmentsActivity"
-            android:label="Segments"
+            android:name=".AddCurveActivity"
+            android:label="@string/title_activity_add_curve"
             android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="erostamas.brewer.MainActivity" />
+        </activity>
+        <activity
+            android:name=".DisplaySegmentsActivity"
+            android:label="@string/title_activity_display_segments"
+            android:parentActivityName=".MainActivity">
         </activity>
         <activity
             android:name=".AddSegmentActivity"
             android:label="@string/title_activity_add_segment"
-            android:parentActivityName=".DisplaySegmentsActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="erostamas.brewer.DisplaySegmentsActivity" />
-        </activity>
-        <activity
-            android:name=".AddCurveActivity"
-            android:label="@string/title_activity_add_curve"
             android:parentActivityName=".DisplaySegmentsActivity">
         </activity>
     </application>

@@ -13,4 +13,5 @@
     <string name="hello_control_fragment">Hello control fragment</string>
     <string name="title_activity_add_segment">AddSegmentActivity</string>
     <string name="title_activity_add_curve">AddCurveActivity</string>
+    <string name="title_activity_display_segments">DisplaySegmentsActivity</string>
 </resources>

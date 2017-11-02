@@ -16,11 +16,8 @@ import java.util.HashMap;
  */
 
 public class SegmentListAdapter extends BaseAdapter{
-    ArrayList<Segment> segments;
-    public SegmentListAdapter(ArrayList<Segment> _segments) {
-        //Log.i("segments", "segmentadapter created with> " + _segments.get(0));
-        segments = new ArrayList<>();
-        segments = _segments;
+    private static ArrayList<Segment> segments;
+    public SegmentListAdapter() {
         notifyDataSetChanged();
     }
 
@@ -58,6 +55,7 @@ public class SegmentListAdapter extends BaseAdapter{
 
     @Override
     public void notifyDataSetChanged() {
+        segments = DisplayCurvesFragment.curves.get(DisplaySegmentsActivity._curveName);
         super.notifyDataSetChanged();
     }
 }

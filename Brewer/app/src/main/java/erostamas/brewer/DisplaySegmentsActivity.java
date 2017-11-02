@@ -25,11 +25,8 @@ public class DisplaySegmentsActivity extends AppCompatActivity {
      * The fragment argument representing the section number for this
      * fragment.
      */
-    private static final String CURVE_NAME = "curve_name";
-    /**
-     * Returns a new instance of this fragment for the given section
-     * number.
-     */
+    public static String _curveName;
+    public static SegmentListAdapter segmentListAdapter;
 
     public DisplaySegmentsActivity() {
     }
@@ -37,12 +34,14 @@ public class DisplaySegmentsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.display_segments);
-        setTitle(MainActivity.current_curve);
+        Intent intent = getIntent();
+        _curveName = intent.getStringExtra(DisplayCurvesFragment.CURVE_NAME);
+        setTitle(_curveName);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         ListView listView = (ListView) findViewById(R.id.segment_list);
-        Log.i("segments", "segment activity created: " + MainActivity.curves.get(current_curve).toString());
-        segmentlistadapter = new SegmentListAdapter(MainActivity.curves.get(current_curve));
-        listView.setAdapter(segmentlistadapter);
+        segmentListAdapter = new SegmentListAdapter();
+        listView.setAdapter(segmentListAdapter);
+
     }
 
     @Override
@@ -65,7 +64,8 @@ public class DisplaySegmentsActivity extends AppCompatActivity {
         }
 
         if (id == R.id.add_segment) {
-            Intent intent = new Intent(DisplaySegmentsActivity.this, AddSegmentActivity.class);
+            Intent intent = new Intent(this, AddSegmentActivity.class);
+            intent.putExtra(DisplayCurvesFragment.CURVE_NAME, _curveName);
             startActivity(intent);
             return true;
         }

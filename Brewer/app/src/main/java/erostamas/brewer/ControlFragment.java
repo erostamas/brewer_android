@@ -113,7 +113,7 @@ public class ControlFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final WifiManager manager = (WifiManager) mainActivity.getApplicationContext().getSystemService(WIFI_SERVICE);
+        final WifiManager manager = (WifiManager) getActivity().getApplicationContext().getSystemService(WIFI_SERVICE);
         final DhcpInfo dhcp = manager.getDhcpInfo();
         byte[] addressBytes = new byte[4];
         for (int k = 0; k < 4; k++) {
