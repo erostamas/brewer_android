@@ -65,11 +65,9 @@ public class AddSegmentActivity extends AppCompatActivity {
         if (item.getTitle() == "Save") {
             NumberPicker hourPicker = (NumberPicker)findViewById(R.id.hourPicker);
             NumberPicker minutePicker = (NumberPicker)findViewById(R.id.minutePicker);
-            long time = hourPicker.getValue() * 3600 + minutePicker.getValue() * 60;
-
             NumberPicker tempPicker = (NumberPicker) findViewById(R.id.tempPicker);
-            double temp = tempPicker.getValue();
-            DisplayCurvesFragment.curves.get(_curveName).add(new Segment(temp, time));
+
+            DisplayCurvesFragment.curves.get(_curveName).add(new Segment(tempPicker.getValue(), hourPicker.getValue(), minutePicker.getValue()));
             DisplaySegmentsActivity.segmentListAdapter.notifyDataSetChanged();
             this.finish();
             return true;

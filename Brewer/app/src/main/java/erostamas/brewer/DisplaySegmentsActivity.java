@@ -2,6 +2,7 @@ package erostamas.brewer;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -41,6 +42,9 @@ public class DisplaySegmentsActivity extends AppCompatActivity {
         ListView listView = (ListView) findViewById(R.id.segment_list);
         segmentListAdapter = new SegmentListAdapter();
         listView.setAdapter(segmentListAdapter);
+        int[] colors = {0, 0xFFFFFFFF, 0};
+        listView.setDivider(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, colors));
+        listView.setDividerHeight(1);
 
     }
 

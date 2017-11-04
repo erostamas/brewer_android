@@ -6,10 +6,12 @@ package erostamas.brewer;
 
 public class Segment {
 
-    double temp;
-    long duration;
-    Segment(double _temp, long _duration) {
-        temp = _temp;
-        duration = _duration;
+    double _temp = 0.0;
+    long _hours = 0;
+    long _minutes = 0;
+    Segment(double temp, long hours, long minutes) {
+        _temp = temp;
+        _hours = hours;
+        _minutes = minutes;
     }
 }

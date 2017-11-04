@@ -2,6 +2,7 @@ package erostamas.brewer;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -35,13 +36,13 @@ public class DisplayCurvesFragment extends Fragment {
             Log.i("brewer", "Adding sim curves");
             initialized = true;
             ArrayList<Segment> curve = new ArrayList<Segment>();
-            curve.add(new Segment(65, 3));
-            curve.add(new Segment(70, 5));
-            curve.add(new Segment(45.5, 5));
+            curve.add(new Segment(65, 0, 5));
+            curve.add(new Segment(70, 0, 6));
+            curve.add(new Segment(45.5, 0, 7));
             ArrayList<Segment> curve2 = new ArrayList<Segment>();
-            curve2.add(new Segment(10, 3));
-            curve2.add(new Segment(20, 5));
-            curve2.add(new Segment(30.5, 5));
+            curve2.add(new Segment(10, 0, 8));
+            curve2.add(new Segment(20, 0, 9));
+            curve2.add(new Segment(30.5, 2, 4));
             DisplayCurvesFragment.curves.put("curve 1", curve);
             DisplayCurvesFragment.curves.put("curve 2", curve2);
             curveListAdapter.notifyDataSetChanged();
@@ -78,6 +79,9 @@ public class DisplayCurvesFragment extends Fragment {
 
             }
         });
+        int[] colors = {0xFFFFFFFF, 0};
+        listView.setDivider(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, colors));
+        listView.setDividerHeight(1);
         ((AppCompatActivity)(getActivity())).getSupportActionBar().setDisplayShowHomeEnabled(true);
         setHasOptionsMenu(true);
         return rootView;

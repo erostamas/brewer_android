@@ -43,8 +43,8 @@ public class SegmentListAdapter extends BaseAdapter{
         TextView temp_text = (TextView) result.findViewById(R.id.segment_temp);
         TextView duration_text = (TextView) result.findViewById(R.id.segment_duration);
 
-        temp_text.setText(Double.toString(getItem(position).temp));
-        duration_text.setText(getItem(position).duration + " s");
+        temp_text.setText(Double.toString(getItem(position)._temp) + "    °C");
+        duration_text.setText(String.format("%02d", getItem(position)._hours) + ":" + String.format("%02d", getItem(position)._minutes));
         return result;
     }
 
