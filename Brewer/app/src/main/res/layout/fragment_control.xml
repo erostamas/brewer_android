@@ -38,70 +38,14 @@
             android:layout_centerVertical="true"
             android:text="°C"
             android:textColor="@android:color/white"/>
-    </RelativeLayout>>
-    <TableLayout
+    </RelativeLayout>
+
+    <ListView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_below="@+id/tempSetterLayout"
-        android:layout_marginTop="10dp"
-        android:stretchColumns="*">
-        <TableRow
-            android:id="@+id/tableRow1"
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-
-        <erostamas.brewer.Views.DataDisplay xmlns:customNS="http://schemas.android.com/apk/res/erostamas.brewer"
-            android:id="@+id/current_mode"
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            customNS:name="MODE"
-            android:layout_marginBottom="0dp"
-            android:layout_marginRight="0dp"
-            android:background="?attr/colorPrimary"/>
-
-        <erostamas.brewer.Views.DataDisplay xmlns:customNS="http://schemas.android.com/apk/res/erostamas.brewer"
-            android:id="@+id/current_output"
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            customNS:name="OUTPUT"
-            customNS:unit="%"
-            android:layout_marginBottom="0dp"
-            android:layout_marginLeft="0dp"
-            android:background="?attr/colorPrimary"/>
-        </TableRow>
-
-        <TableRow
-            android:id="@+id/tableRow2"
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" >
-
-            <erostamas.brewer.Views.DataDisplay xmlns:customNS="http://schemas.android.com/apk/res/erostamas.brewer"
-                android:id="@+id/next_setpoint"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                customNS:name="NEXT SP"
-                customNS:unit="°C"
-                android:layout_marginTop="0dp"
-                android:layout_marginRight="0dp"
-                android:background="?attr/colorPrimary"/>
-
-            <erostamas.brewer.Views.DataDisplay xmlns:customNS="http://schemas.android.com/apk/res/erostamas.brewer"
-                android:id="@+id/time_to_next_segment"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                customNS:name="TIME TO NEXT SP"
-                android:layout_marginTop="0dp"
-                android:layout_marginLeft="0dp"
-                android:background="?attr/colorPrimary"/>
-        </TableRow>
-
-    </TableLayout>
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tempSetterLayout"
+        android:layout_marginTop="15dp"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/misc_data_list" />
 
 </RelativeLayout>

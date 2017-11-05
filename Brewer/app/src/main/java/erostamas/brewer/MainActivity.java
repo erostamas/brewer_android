@@ -64,33 +64,18 @@ public class MainActivity extends AppCompatActivity {
     }
     public static void updateUI(){
 
-        if (currentTemperature == -1.0) {
-            return;
-        }
-        Gauge tempview = (Gauge) controlFragmentView.findViewById(R.id.current_temp);
-        tempview.set(currentTemperature);
+        //DataDisplay outputview = (DataDisplay) controlFragmentView.findViewById(R.id.current_output);
+        //outputview.set(Integer.toString(currentOutput));
 
-        DataDisplay modeview = (DataDisplay) controlFragmentView.findViewById(R.id.current_mode);
-        modeview.set(currentMode);
-
-        NumberPicker setpointview = (NumberPicker) controlFragmentView.findViewById(R.id.setpoint);
-        if (currentSetpoint != previousSetpoint) {
-            previousSetpoint = currentSetpoint;
-            setpointview.setValue(currentSetpoint);
-        }
-
-        DataDisplay outputview = (DataDisplay) controlFragmentView.findViewById(R.id.current_output);
-        outputview.set(Integer.toString(currentOutput));
-
-        DataDisplay nextsetpointview = (DataDisplay) controlFragmentView.findViewById(R.id.next_setpoint);
-        DataDisplay timetonextsetpointview = (DataDisplay) controlFragmentView.findViewById(R.id.time_to_next_segment);
-        if (currentMode == "AUTO") {
-            nextsetpointview.set(String.format("%.1f", nextSetpoint));
-            timetonextsetpointview.set(Double.toString(timeToNextSetpoint));
-        } else {
-            nextsetpointview.set("");
-            timetonextsetpointview.set("");
-        }
+        //DataDisplay nextsetpointview = (DataDisplay) controlFragmentView.findViewById(R.id.next_setpoint);
+        //DataDisplay timetonextsetpointview = (DataDisplay) controlFragmentView.findViewById(R.id.time_to_next_segment);
+        //if (currentMode == "AUTO") {
+        //    nextsetpointview.set(String.format("%.1f", nextSetpoint));
+        //    timetonextsetpointview.set(Double.toString(timeToNextSetpoint));
+        //} else {
+        //    nextsetpointview.set("");
+        //    timetonextsetpointview.set("");
+        //}
     }
 
     @Override

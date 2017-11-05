@@ -1,6 +1,7 @@
 package erostamas.brewer;
 
 import android.content.DialogInterface;
+import android.graphics.drawable.GradientDrawable;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -15,10 +16,13 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.NumberPicker;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -27,7 +31,10 @@ import erostamas.brewer.Views.Gauge;
 
 import static android.content.Context.WIFI_SERVICE;
 import static erostamas.brewer.MainActivity.controlFragmentView;
+import static erostamas.brewer.MainActivity.currentSetpoint;
+import static erostamas.brewer.MainActivity.currentTemperature;
 import static erostamas.brewer.MainActivity.mainActivity;
+import static erostamas.brewer.MainActivity.previousSetpoint;
 
 /**
  * Created by etamero on 2016.06.28..
@@ -39,6 +46,8 @@ public class ControlFragment extends Fragment {
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
     private ScheduledExecutorService scheduleTaskExecutor;
+    private MiscDataListAdapter miscDataListAdapter = new MiscDataListAdapter();
+    private Timer uiUpdateTimer;
     /**
      * Returns a new instance of this fragment for the given section
      * number.
@@ -71,7 +80,11 @@ public class ControlFragment extends Fragment {
                 sender.execute(msg);
             }
         });
-
+        ListView miscDataList = (ListView) controlFragmentView.findViewById(R.id.misc_data_list);
+        miscDataList.setAdapter(miscDataListAdapter);
+        int[] colors = {0, 0xFFFFFFFF, 0};
+        miscDataList.setDivider(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, colors));
+        miscDataList.setDividerHeight(1);
         return rootView;
     }
 
@@ -100,6 +113,35 @@ public class ControlFragment extends Fragment {
             Log.i("Brewer", "6");
         } catch (UnknownHostException ex) {
             Log.e("brewer", "Unknown host exception");
+        }
+
+        uiUpdateTimer = new Timer();
+        uiUpdateTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                mainActivity.runOnUiThread(new Runnable() {
+                    public void run() {
+                        updateUI();
+                    }
+                });
+            }
+        }, 0, 1000); // 10000 is in miliseconds, this executes every 10 seconds
+
+    }
+
+    private void updateUI() {
+        if (controlFragmentView == null || currentTemperature == -1.0) {
+            return;
+        }
+        Gauge tempview = (Gauge) controlFragmentView.findViewById(R.id.current_temp);
+        tempview.set(currentTemperature);
+
+        miscDataListAdapter.notifyDataSetChanged();
+
+        NumberPicker setpointview = (NumberPicker) controlFragmentView.findViewById(R.id.setpoint);
+        if (currentSetpoint != previousSetpoint) {
+            previousSetpoint = currentSetpoint;
+            setpointview.setValue(currentSetpoint);
         }
     }
 }
