@@ -7,52 +7,44 @@
     tools:context="erostamas.brewer.ControlFragment">
 
     <!-- TODO: Update blank fragment layout -->
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tempSetterLayout"
+        android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true">
+        <erostamas.brewer.Views.Gauge
+            xmlns:customNS="http://schemas.android.com/apk/res/erostamas.brewer"
+            android:id="@+id/current_temp"
+            customNS:name="TEMP"
+            android:layout_width="170dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="20dp"/>
 
-    <erostamas.brewer.Views.Gauge
-        xmlns:customNS="http://schemas.android.com/apk/res/erostamas.brewer"
-        android:id="@+id/current_temp"
-        customNS:name="TEMP"
-        android:layout_width="170dp"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-
-    <erostamas.brewer.Views.Gauge
-        xmlns:customNS="http://schemas.android.com/apk/res/erostamas.brewer"
-        android:id="@+id/setpoint"
-        customNS:name="SP"
-        android:layout_width="170dp"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/current_temp"
-        android:layout_centerHorizontal="true"
-        android:inputType="number"/>
-
-    <ImageButton
-        android:id="@+id/increase_setpoint_button"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_alignTop="@+id/setpoint"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="0dp"
-        android:layout_marginTop="15dp"
-        android:layout_toRightOf="@+id/setpoint"
-        android:background="@null"
-        android:src="@mipmap/increase" />
-
-    <ImageButton
-        android:id="@+id/decrease_setpoint_button"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:src="@mipmap/decrease"
-        android:background="@null"
-        android:layout_below="@+id/increase_setpoint_button"
-        android:layout_toRightOf="@+id/setpoint"/>
-
+        <NumberPicker
+            android:theme="@style/NumberPickerTextColorStyle"
+            android:id="@+id/setpoint"
+            android:layout_width="wrap_content"
+            android:layout_height="150dp"
+            android:layout_toRightOf="@id/current_temp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="50dp"/>
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/setpointUnit"
+            android:layout_toRightOf="@id/setpoint"
+            android:layout_centerVertical="true"
+            android:text="°C"
+            android:textColor="@android:color/white"/>
+    </RelativeLayout>>
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
-        android:layout_below="@+id/setpoint"
+        android:layout_below="@+id/tempSetterLayout"
+        android:layout_marginTop="10dp"
         android:stretchColumns="*">
         <TableRow
             android:id="@+id/tableRow1"

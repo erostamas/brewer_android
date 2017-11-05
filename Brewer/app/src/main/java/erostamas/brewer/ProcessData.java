@@ -14,7 +14,7 @@ public class ProcessData {
     public void setOutput(int output) {
         _output = output;
     }
-    public void setSetpoint(double setpoint) { _setpoint = setpoint; }
+    public void setSetpoint(int setpoint) { _setpoint = setpoint; }
     public void setNextSetpoint(double nextSetpoint) { _nextSetpoint = nextSetpoint; }
     public void setTimeToNextSetpoint(int time) { _timeToNextSetpoint = time; }
 
@@ -28,7 +28,7 @@ public class ProcessData {
     public int getOutput() {
         return _output;
     }
-    public double getSetpoint() {
+    public int getSetpoint() {
         return _setpoint;
     }
     public double getNextSetpoint() {
@@ -38,10 +38,10 @@ public class ProcessData {
         return _timeToNextSetpoint;
     }
 
-    private double _temperature = 0.0;
+    private double _temperature = -1.0;
     private String _mode = "";
     private int _output = 0;
-    private double _setpoint = 0.0;
+    private int _setpoint = 0;
     private double _nextSetpoint = 0.0;
     private int _timeToNextSetpoint = 0;
 }

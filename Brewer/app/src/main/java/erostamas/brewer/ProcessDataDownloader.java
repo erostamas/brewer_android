@@ -67,7 +67,7 @@ public class ProcessDataDownloader extends AsyncTask <String, Integer, ProcessDa
                         ret.setTemperature(Double.parseDouble(readText(parser)));
                         Log.i("brewer", "temp found: " + ret.getTemperature());
                     } else if (name.equals("setpoint")) {
-                        ret.setSetpoint(Double.parseDouble(readText(parser)));
+                        ret.setSetpoint(Integer.parseInt(readText(parser)));
                     } else if (name.equals("mode")) {
                         ret.setMode(readText(parser));
                     } else if (name.equals("output")) {

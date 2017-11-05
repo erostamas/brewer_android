@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.NumberPicker;
 
 import erostamas.brewer.Views.DataDisplay;
 import erostamas.brewer.Views.Gauge;
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     public static View controlFragmentView;
     public static double currentTemperature;
     public static String currentMode;
-    public static double currentSetpoint;
+    public static int currentSetpoint;
     public static int currentOutput;
     public static double nextSetpoint;
     public static int timeToNextSetpoint;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     public static SegmentListAdapter segmentlistadapter;
     public static String current_curve;
     private static int position = 0;
+    static int previousSetpoint = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,14 +64,20 @@ public class MainActivity extends AppCompatActivity {
     }
     public static void updateUI(){
 
+        if (currentTemperature == -1.0) {
+            return;
+        }
         Gauge tempview = (Gauge) controlFragmentView.findViewById(R.id.current_temp);
         tempview.set(currentTemperature);
 
         DataDisplay modeview = (DataDisplay) controlFragmentView.findViewById(R.id.current_mode);
         modeview.set(currentMode);
 
-        Gauge setpointview = (Gauge) controlFragmentView.findViewById(R.id.setpoint);
-        setpointview.set(currentSetpoint);
+        NumberPicker setpointview = (NumberPicker) controlFragmentView.findViewById(R.id.setpoint);
+        if (currentSetpoint != previousSetpoint) {
+            previousSetpoint = currentSetpoint;
+            setpointview.setValue(currentSetpoint);
+        }
 
         DataDisplay outputview = (DataDisplay) controlFragmentView.findViewById(R.id.current_output);
         outputview.set(Integer.toString(currentOutput));
