@@ -6,12 +6,25 @@ package erostamas.brewer;
 
 public class Segment {
 
-    double _temp = 0.0;
+    int _temp = 0;
     long _hours = 0;
     long _minutes = 0;
-    Segment(double temp, long hours, long minutes) {
+
+    Segment(int temp, long hours, long minutes) {
         _temp = temp;
         _hours = hours;
         _minutes = minutes;
+    }
+
+    Segment(String segmentString) {
+        String[] separated = segmentString.split(":");
+        _temp = Integer.parseInt(separated[0]);
+        int seconds = Integer.parseInt(separated[1]);
+        _hours = seconds / 3600;
+        _minutes = (seconds - seconds * 3600) / 60;
+    }
+
+    public String toSring() {
+        return _temp + ":" + _hours * 3600 + _minutes * 60;
     }
 }

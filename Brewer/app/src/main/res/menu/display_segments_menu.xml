@@ -4,9 +4,4 @@
     tools:context="erostamas.brewer.DisplaySegmentsActivity">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
-    <item
-        android:id="@+id/add_segment"
-        android:icon="@android:drawable/ic_menu_add"
-        android:title="add_segment"
-        app:showAsAction="ifRoom"/>
 </menu>

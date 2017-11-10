@@ -4,9 +4,4 @@
     tools:context="erostamas.brewer.DisplayCurvesFragment">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
-    <item
-        android:id="@+id/add_curve"
-        android:icon="@android:drawable/ic_menu_add"
-        android:title="add_curve"
-        app:showAsAction="ifRoom"/>
 </menu>

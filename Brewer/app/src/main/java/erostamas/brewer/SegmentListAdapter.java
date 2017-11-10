@@ -55,7 +55,7 @@ public class SegmentListAdapter extends BaseAdapter{
 
     @Override
     public void notifyDataSetChanged() {
-        segments = DisplayCurvesFragment.curves.get(DisplaySegmentsActivity._curveName);
+        segments = DisplayCurvesFragment.curves.get(DisplaySegmentsActivity._curveName).getSegments();
         super.notifyDataSetChanged();
     }
 }

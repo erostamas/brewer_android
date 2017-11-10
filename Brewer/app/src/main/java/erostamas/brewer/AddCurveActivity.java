@@ -32,7 +32,7 @@ public class AddCurveActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getTitle() == "Save") {
-            ArrayList<Segment> curve = new ArrayList<Segment>();
+            Curve curve = new Curve();
             EditText curveName = (EditText)findViewById(R.id.set_curve_name_textbox);
             DisplayCurvesFragment.curves.put(curveName.getText().toString(), curve);
             DisplayCurvesFragment.curveListAdapter.notifyDataSetChanged();

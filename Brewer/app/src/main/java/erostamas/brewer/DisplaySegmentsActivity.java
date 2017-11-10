@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import static erostamas.brewer.MainActivity.current_curve;
@@ -45,7 +46,14 @@ public class DisplaySegmentsActivity extends AppCompatActivity {
         int[] colors = {0, 0xFFFFFFFF, 0};
         listView.setDivider(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, colors));
         listView.setDividerHeight(1);
-
+        ImageButton fab = (ImageButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(DisplaySegmentsActivity.this, AddSegmentActivity.class);
+                intent.putExtra(DisplayCurvesFragment.CURVE_NAME, _curveName);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -64,13 +72,6 @@ public class DisplaySegmentsActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
-        }
-
-        if (id == R.id.add_segment) {
-            Intent intent = new Intent(this, AddSegmentActivity.class);
-            intent.putExtra(DisplayCurvesFragment.CURVE_NAME, _curveName);
-            startActivity(intent);
             return true;
         }
 

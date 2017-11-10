@@ -10,7 +10,21 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/curves_list"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/curves_list" />
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="15dp" />
+    <ImageButton
+        android:id="@+id/fab"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_gravity="bottom|end"
+        android:src="@mipmap/add"
+        android:layout_marginLeft="@dimen/fab_margin"
+        android:layout_marginRight="@dimen/fab_margin"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:backgroundTint="@android:color/transparent"
+        android:background="@null"
+        android:scaleType="fitXY"/>
 </RelativeLayout>

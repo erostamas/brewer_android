@@ -1,6 +1,7 @@
 package erostamas.brewer;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -15,8 +16,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -26,7 +34,7 @@ import java.util.HashMap;
 
 public class DisplayCurvesFragment extends Fragment {
     public static final String CURVE_NAME = "com.example.brewer.CURVE_NAME";
-    public static HashMap<String, ArrayList<Segment>> curves = new HashMap<>();
+    public static HashMap<String, Curve> curves = new HashMap<>();
     public static CurveListAdapter curveListAdapter = new CurveListAdapter();
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static boolean initialized = false;
@@ -35,16 +43,16 @@ public class DisplayCurvesFragment extends Fragment {
         if (!initialized) {
             Log.i("brewer", "Adding sim curves");
             initialized = true;
-            ArrayList<Segment> curve = new ArrayList<Segment>();
+            Curve curve = new Curve("curve_1");
             curve.add(new Segment(65, 0, 5));
             curve.add(new Segment(70, 0, 6));
-            curve.add(new Segment(45.5, 0, 7));
-            ArrayList<Segment> curve2 = new ArrayList<Segment>();
+            curve.add(new Segment(45, 0, 7));
+            Curve curve2 = new Curve("curve_2");
             curve2.add(new Segment(10, 0, 8));
             curve2.add(new Segment(20, 0, 9));
-            curve2.add(new Segment(30.5, 2, 4));
-            DisplayCurvesFragment.curves.put("curve 1", curve);
-            DisplayCurvesFragment.curves.put("curve 2", curve2);
+            curve2.add(new Segment(30, 2, 4));
+            DisplayCurvesFragment.curves.put(curve.getName(), curve);
+            DisplayCurvesFragment.curves.put(curve2.getName(), curve2);
             curveListAdapter.notifyDataSetChanged();
         }
     }
@@ -84,6 +92,15 @@ public class DisplayCurvesFragment extends Fragment {
         listView.setDividerHeight(1);
         ((AppCompatActivity)(getActivity())).getSupportActionBar().setDisplayShowHomeEnabled(true);
         setHasOptionsMenu(true);
+
+        ImageButton fab = (ImageButton) rootView.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), AddCurveActivity.class);
+                startActivity(intent);
+            }
+        });
+
         return rootView;
     }
 
@@ -101,12 +118,47 @@ public class DisplayCurvesFragment extends Fragment {
             return true;
         }
 
-        if (id == R.id.add_curve) {
-            Intent intent = new Intent(getActivity(), AddCurveActivity.class);
-            startActivity(intent);
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        String filename = "brewer_curves.txt";
+        FileOutputStream outputStream;
+        Log.i("brewer", "Writing file");
+        try {
+            outputStream =  getActivity().getApplicationContext().openFileOutput(filename, Context.MODE_PRIVATE);
+            outputStream.write("hello".getBytes());
+            outputStream.close();
+            Log.i("brewer", "Writing file done");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        try {
+            InputStream instream = new FileInputStream("myfilename.txt");
+            if (instream != null) {
+                // prepare the file for reading
+                InputStreamReader inputreader = new InputStreamReader(instream);
+                BufferedReader buffreader = new BufferedReader(inputreader);
+
+                String line;
+
+                // read every line of the file into the line-variable, on line at the time
+                do {
+                    line = buffreader.readLine();
+                    // do something with the line
+                } while (line != null);
+                instream.close();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }
