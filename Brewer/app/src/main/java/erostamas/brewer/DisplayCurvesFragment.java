@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -29,6 +30,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by etamero on 2016.06.30..
@@ -95,7 +98,9 @@ public class DisplayCurvesFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.display_curves_menu, menu);
+        //inflater.inflate(R.menu.display_curves_menu, menu);
+        menu.add(0, 0, 0, "Settings");
+        menu.add(0, 1, 1, "Send as email");
         super.onCreateOptionsMenu(menu,inflater);
     }
 
@@ -103,7 +108,17 @@ public class DisplayCurvesFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
+        if (id == 1) {
+            String curvesString = "";
+            Iterator it = DisplayCurvesFragment.curves.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry)it.next();
+                curvesString += pair.getValue().toString() + "\n";
+            }
+            Intent sendIntent = new Intent(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, curvesString);
+            sendIntent.setType("text/plain");
+            startActivity(sendIntent);
             return true;
         }
 
