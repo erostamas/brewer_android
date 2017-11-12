@@ -24,14 +24,14 @@ import static erostamas.brewer.MainActivity.segmentlistadapter;
 public class AddSegmentActivity extends AppCompatActivity {
 
     private String _curveName;
+    private boolean _editMode = false;
+    private int _segmentIndex = -1;
+    private Segment _segment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_segment);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        Intent intent = getIntent();
-        _curveName = intent.getStringExtra(DisplayCurvesFragment.CURVE_NAME);
-        setTitle("Add new segment");
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         NumberPicker hourPicker = (NumberPicker)findViewById(R.id.hourPicker);
         hourPicker.setMinValue(0);
@@ -41,9 +41,24 @@ public class AddSegmentActivity extends AppCompatActivity {
         minutePicker.setMinValue(0);
         minutePicker.setMaxValue(59);
 
-        NumberPicker numberPicker = (NumberPicker) findViewById(R.id.tempPicker);
-        numberPicker.setMinValue(0);
-        numberPicker.setMaxValue(100);
+        NumberPicker tempPicker = (NumberPicker) findViewById(R.id.tempPicker);
+        tempPicker.setMinValue(0);
+        tempPicker.setMaxValue(100);
+        Intent intent = getIntent();
+        _curveName = intent.getStringExtra(DisplayCurvesFragment.CURVE_NAME);
+        if (intent.hasExtra(DisplaySegmentsActivity.SEGMENT_INDEX)) {
+            _segmentIndex = intent.getIntExtra(DisplaySegmentsActivity.SEGMENT_INDEX, 0);
+            setTitle("Add new segment");
+            _editMode = true;
+            _segment = DisplayCurvesFragment.curves.get(_curveName).getSegments().get(_segmentIndex);
+            hourPicker.setValue(_segment.getHours());
+            minutePicker.setValue(_segment.getMinutes());
+            tempPicker.setValue(_segment.getTemp());
+        } else {
+            setTitle("Edit segment");
+            _editMode = false;
+        }
+
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -66,9 +81,15 @@ public class AddSegmentActivity extends AppCompatActivity {
             NumberPicker hourPicker = (NumberPicker)findViewById(R.id.hourPicker);
             NumberPicker minutePicker = (NumberPicker)findViewById(R.id.minutePicker);
             NumberPicker tempPicker = (NumberPicker) findViewById(R.id.tempPicker);
-
-            DisplayCurvesFragment.curves.get(_curveName).add(new Segment(tempPicker.getValue(), hourPicker.getValue(), minutePicker.getValue()));
-            DisplaySegmentsActivity.segmentListAdapter.notifyDataSetChanged();
+            if (_editMode) {
+                _segment._hours = hourPicker.getValue();
+                _segment._minutes = minutePicker.getValue();
+                _segment._temp = tempPicker.getValue();
+                DisplaySegmentsActivity.segmentListAdapter.notifyDataSetChanged();
+            } else {
+                DisplayCurvesFragment.curves.get(_curveName).add(new Segment(tempPicker.getValue(), hourPicker.getValue(), minutePicker.getValue()));
+                DisplaySegmentsActivity.segmentListAdapter.notifyDataSetChanged();
+            }
             this.finish();
             return true;
         } else if (item.getItemId() == android.R.id.home) {
