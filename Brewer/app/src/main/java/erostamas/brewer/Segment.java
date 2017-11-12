@@ -21,10 +21,11 @@ public class Segment {
         _temp = Integer.parseInt(separated[0]);
         int seconds = Integer.parseInt(separated[1]);
         _hours = seconds / 3600;
-        _minutes = (seconds - seconds * 3600) / 60;
+        _minutes = (seconds - _hours * 3600) / 60;
     }
 
-    public String toSring() {
-        return _temp + ":" + _hours * 3600 + _minutes * 60;
+    @Override
+    public String toString() {
+        return _temp + ":" + Long.toString(_hours * 3600 + _minutes * 60);
     }
 }

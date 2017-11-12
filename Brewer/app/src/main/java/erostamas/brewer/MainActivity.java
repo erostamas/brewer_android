@@ -1,7 +1,14 @@
 package erostamas.brewer;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
 
 import android.content.Context;
 import android.os.PersistableBundle;
@@ -19,6 +26,8 @@ import android.widget.NumberPicker;
 
 import erostamas.brewer.Views.DataDisplay;
 import erostamas.brewer.Views.Gauge;
+
+import static erostamas.brewer.DisplayCurvesFragment.curves;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     public static String current_curve;
     private static int position = 0;
     static int previousSetpoint = -1;
+    private static String curveFileName = "brewer_curves.txt";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        loadCurvesFromFile();
 
     }
     public static void updateUI(){
@@ -119,9 +130,56 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        FileOutputStream outputStream;
+        try {
+            outputStream =  getApplicationContext().openFileOutput(curveFileName, Context.MODE_PRIVATE);
+            Iterator it = DisplayCurvesFragment.curves.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry)it.next();
+                outputStream.write(pair.getValue().toString().getBytes());
+                outputStream.write("\n".getBytes());
+            }
+
+            outputStream.close();
+            Log.i("brewer_file", "Writing file done");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    @Override
     protected void onPostResume() {
         super.onPostResume();
         mViewPager.setCurrentItem(position);
+
+    }
+
+    private void loadCurvesFromFile() {
+        try {
+            InputStream instream = getApplicationContext().openFileInput(curveFileName);
+            if (instream != null) {
+                // prepare the file for reading
+                InputStreamReader inputReader = new InputStreamReader(instream);
+                BufferedReader buffReader = new BufferedReader(inputReader);
+
+                String line;
+
+                // read every line of the file into the line-variable, on line at the time
+                do {
+
+                    line = buffReader.readLine();
+                    if (line != null) {
+                        Curve curve = new Curve(line);
+                        DisplayCurvesFragment.curves.put(curve.getName(), curve);
+                    }
+                } while (line != null);
+                instream.close();
+                DisplayCurvesFragment.curveListAdapter.notifyDataSetChanged();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**

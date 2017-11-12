@@ -32,11 +32,13 @@ public class AddCurveActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getTitle() == "Save") {
-            Curve curve = new Curve();
-            EditText curveName = (EditText)findViewById(R.id.set_curve_name_textbox);
-            DisplayCurvesFragment.curves.put(curveName.getText().toString(), curve);
-            DisplayCurvesFragment.curveListAdapter.notifyDataSetChanged();
-            NavUtils.navigateUpFromSameTask(this);
+            String curveName = ((EditText)findViewById(R.id.set_curve_name_textbox)).getText().toString();
+            if (curveName.length() != 0) {
+                Curve curve = new Curve(curveName);
+                DisplayCurvesFragment.curves.put(curveName, curve);
+                DisplayCurvesFragment.curveListAdapter.notifyDataSetChanged();
+                NavUtils.navigateUpFromSameTask(this);
+            }
         }
         if (item.getTitle() == "Cancel") {
             NavUtils.navigateUpFromSameTask(this);

@@ -39,22 +39,7 @@ public class DisplayCurvesFragment extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static boolean initialized = false;
     public DisplayCurvesFragment() {
-        Log.i("brewer", "DisplayCurvesFragment constructorz");
-        if (!initialized) {
-            Log.i("brewer", "Adding sim curves");
-            initialized = true;
-            Curve curve = new Curve("curve_1");
-            curve.add(new Segment(65, 0, 5));
-            curve.add(new Segment(70, 0, 6));
-            curve.add(new Segment(45, 0, 7));
-            Curve curve2 = new Curve("curve_2");
-            curve2.add(new Segment(10, 0, 8));
-            curve2.add(new Segment(20, 0, 9));
-            curve2.add(new Segment(30, 2, 4));
-            DisplayCurvesFragment.curves.put(curve.getName(), curve);
-            DisplayCurvesFragment.curves.put(curve2.getName(), curve2);
-            curveListAdapter.notifyDataSetChanged();
-        }
+        curveListAdapter.notifyDataSetChanged();
     }
 
     public static DisplayCurvesFragment newInstance(int sectionNumber) {
@@ -119,46 +104,5 @@ public class DisplayCurvesFragment extends Fragment {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        String filename = "brewer_curves.txt";
-        FileOutputStream outputStream;
-        Log.i("brewer", "Writing file");
-        try {
-            outputStream =  getActivity().getApplicationContext().openFileOutput(filename, Context.MODE_PRIVATE);
-            outputStream.write("hello".getBytes());
-            outputStream.close();
-            Log.i("brewer", "Writing file done");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        try {
-            InputStream instream = new FileInputStream("myfilename.txt");
-            if (instream != null) {
-                // prepare the file for reading
-                InputStreamReader inputreader = new InputStreamReader(instream);
-                BufferedReader buffreader = new BufferedReader(inputreader);
-
-                String line;
-
-                // read every line of the file into the line-variable, on line at the time
-                do {
-                    line = buffreader.readLine();
-                    // do something with the line
-                } while (line != null);
-                instream.close();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
     }
 }
