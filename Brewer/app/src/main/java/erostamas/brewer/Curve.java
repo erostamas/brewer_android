@@ -24,6 +24,10 @@ public class Curve {
         setSegments(curveString);
     }
 
+    public void setName(String name) {
+        _name = name;
+    }
+
     private void setSegments(String curveString) {
         String[] segments = curveString.split(";");
         for (int i = 0; i < segments.length; i++) {

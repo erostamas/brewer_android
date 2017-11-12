@@ -1,5 +1,6 @@
 package erostamas.brewer;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -9,13 +10,29 @@ import android.widget.EditText;
 
 import java.util.ArrayList;
 
+import static erostamas.brewer.DisplayCurvesFragment.curves;
+
 public class AddCurveActivity extends AppCompatActivity {
 
+    private boolean _editMode = false;
+    private String _curveName = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_curve);
-        setTitle("Add new curve");
+        Intent intent = getIntent();
+        if (intent.hasExtra(DisplayCurvesFragment.CURVE_NAME)) {
+            _curveName = intent.getStringExtra(DisplayCurvesFragment.CURVE_NAME);
+            _editMode = true;
+            setTitle("Edit curve " + _curveName);
+            ((EditText) findViewById(R.id.set_curve_name_textbox)).setText(_curveName);
+        } else {
+            _curveName = "";
+            _editMode = false;
+            setTitle("Add new curve");
+        }
+
+
         getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
     @Override
@@ -32,14 +49,24 @@ public class AddCurveActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getTitle() == "Save") {
-            String curveName = ((EditText)findViewById(R.id.set_curve_name_textbox)).getText().toString();
-            if (curveName.length() != 0) {
-                Curve curve = new Curve(curveName);
-                DisplayCurvesFragment.curves.put(curveName, curve);
-                DisplayCurvesFragment.curveListAdapter.notifyDataSetChanged();
-                NavUtils.navigateUpFromSameTask(this);
+            String newCurveName = ((EditText) findViewById(R.id.set_curve_name_textbox)).getText().toString();
+            if (newCurveName.length() != 0) {
+                if (!_editMode) {
+                    Curve curve = new Curve(newCurveName);
+                    curves.put(newCurveName, curve);
+                    DisplayCurvesFragment.curveListAdapter.notifyDataSetChanged();
+                    NavUtils.navigateUpFromSameTask(this);
+                } else {
+                    Curve curve = curves.get(_curveName);
+                    curve.setName(newCurveName);
+                    curves.put(newCurveName, curve);
+                    curves.remove(_curveName);
+                    DisplayCurvesFragment.curveListAdapter.notifyDataSetChanged();
+                    NavUtils.navigateUpFromSameTask(this);
+                }
             }
         }
+
         if (item.getTitle() == "Cancel") {
             NavUtils.navigateUpFromSameTask(this);
         }

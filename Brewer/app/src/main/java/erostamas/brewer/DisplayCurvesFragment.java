@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -75,6 +77,8 @@ public class DisplayCurvesFragment extends Fragment {
         int[] colors = {0xFFFFFFFF, 0};
         listView.setDivider(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, colors));
         listView.setDividerHeight(1);
+        registerForContextMenu(listView);
+
         ((AppCompatActivity)(getActivity())).getSupportActionBar().setDisplayShowHomeEnabled(true);
         setHasOptionsMenu(true);
 
@@ -104,5 +108,37 @@ public class DisplayCurvesFragment extends Fragment {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        if (v.getId() == R.id.curves_list){
+
+            MenuItem mnu1=menu.add(0,0,0,"Edit");
+            MenuItem mnu2=menu.add(0,1,1,"Delete");
+        }
+        super.onCreateContextMenu(menu, v, menuInfo);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        String selectedCurve = curveListAdapter.getItem(info.position);
+        switch (item.getItemId()) {
+            case 0:
+                Intent intent = new Intent(getActivity(), AddCurveActivity.class);
+                intent.putExtra(CURVE_NAME, selectedCurve);
+                startActivity(intent);
+                break;
+            case 1:
+                curves.remove(selectedCurve);
+                curveListAdapter.notifyDataSetChanged();
+                break;
+
+            default:
+                break;
+
+        }
+        return true;
     }
 }
