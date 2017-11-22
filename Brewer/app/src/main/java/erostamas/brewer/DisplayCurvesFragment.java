@@ -98,9 +98,8 @@ public class DisplayCurvesFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        //inflater.inflate(R.menu.display_curves_menu, menu);
+        getActivity().getMenuInflater().inflate(R.menu.display_curves_menu, menu);
         menu.add(0, 0, 0, "Settings");
-        menu.add(0, 1, 1, "Send as email");
         super.onCreateOptionsMenu(menu,inflater);
     }
 
@@ -108,7 +107,7 @@ public class DisplayCurvesFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == 1) {
+        if (id == R.id.share_curves) {
             String curvesString = "";
             Iterator it = DisplayCurvesFragment.curves.entrySet().iterator();
             while (it.hasNext()) {
