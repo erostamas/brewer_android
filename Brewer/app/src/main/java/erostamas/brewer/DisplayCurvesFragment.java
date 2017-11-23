@@ -128,8 +128,8 @@ public class DisplayCurvesFragment extends Fragment {
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         if (v.getId() == R.id.curves_list){
 
-            MenuItem mnu1=menu.add(0,0,0,"Edit");
-            MenuItem mnu2=menu.add(0,1,1,"Delete");
+            menu.add(0,0,0,"Edit");
+            menu.add(0,1,1,"Delete");
         }
         super.onCreateContextMenu(menu, v, menuInfo);
     }

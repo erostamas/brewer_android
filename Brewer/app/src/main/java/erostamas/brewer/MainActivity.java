@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.setAdapter(mSectionsPagerAdapter);
         loadCurvesFromFile();
 
+
     }
     public static void updateUI(){
 
@@ -155,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void loadCurvesFromFile() {
+    public void loadCurvesFromFile() {
         try {
             InputStream instream = getApplicationContext().openFileInput(curveFileName);
             if (instream != null) {

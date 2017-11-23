@@ -5,7 +5,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -37,6 +38,26 @@
             android:label="@string/title_activity_add_segment"
             android:parentActivityName=".DisplaySegmentsActivity">
         </activity>
+        <activity
+            android:name=".ImportCurvesActivity"
+            android:label="Brewer Importer"
+            android:parentActivityName=".MainActivity">
+            <intent-filter android:label="Brewer">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="content" />
+                <data android:mimeType="application/octet-stream" />
+            </intent-filter>
+            <intent-filter android:label="Brewer">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="file" />
+                <data android:pathPattern=".*\\.brewer" />
+                <data android:mimeType="*/*"/>
+                <data android:host="*"/>
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>
