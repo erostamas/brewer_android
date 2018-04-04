@@ -1,15 +1,10 @@
 package erostamas.brewer;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,18 +15,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Toast;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import static erostamas.brewer.MainActivity.mainActivity;
 
 /**
  * Created by etamero on 2016.06.30..
@@ -42,7 +30,6 @@ public class DisplayCurvesFragment extends Fragment {
     public static HashMap<String, Curve> curves = new HashMap<>();
     public static CurveListAdapter curveListAdapter = new CurveListAdapter();
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private static boolean initialized = false;
     public DisplayCurvesFragment() {
         curveListAdapter.notifyDataSetChanged();
     }
@@ -128,8 +115,9 @@ public class DisplayCurvesFragment extends Fragment {
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         if (v.getId() == R.id.curves_list){
 
-            menu.add(0,0,0,"Edit");
-            menu.add(0,1,1,"Delete");
+            menu.add(0,0,0,"Play");
+            menu.add(0,1,1,"Edit");
+            menu.add(0,2,2,"Delete");
         }
         super.onCreateContextMenu(menu, v, menuInfo);
     }
@@ -140,11 +128,18 @@ public class DisplayCurvesFragment extends Fragment {
         String selectedCurve = curveListAdapter.getItem(info.position);
         switch (item.getItemId()) {
             case 0:
+                UdpMessage msg = new UdpMessage(mainActivity.brewerAddress, 50001, "playcurve " + curves.get(selectedCurve).toString());
+                UdpSender sender = new UdpSender();
+                sender.execute(msg);
+                //Intent intent = new Intent(getActivity(), MainActivity.class);
+                //startActivity(intent);
+                break;
+            case 1:
                 Intent intent = new Intent(getActivity(), AddCurveActivity.class);
                 intent.putExtra(CURVE_NAME, selectedCurve);
                 startActivity(intent);
                 break;
-            case 1:
+            case 2:
                 curves.remove(selectedCurve);
                 curveListAdapter.notifyDataSetChanged();
                 break;

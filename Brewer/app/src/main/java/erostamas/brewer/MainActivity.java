@@ -42,15 +42,16 @@ public class MainActivity extends AppCompatActivity {
     public static boolean SIMULATION_MODE = true;
     SectionsPagerAdapter mSectionsPagerAdapter;
     ViewPager mViewPager;
-    static Context myappcontext;
+    public static Context myappcontext;
     public static String brewerAddress = "172.24.1.1";
     public static View controlFragmentView;
     public static double currentTemperature;
-    public static String currentMode;
+
     public static int currentSetpoint;
     public static int currentOutput;
     public static double nextSetpoint;
     public static int timeToNextSetpoint;
+
     public static MainActivity mainActivity;
     public static CurveListAdapter curvelistadapter;
     public static SegmentListAdapter segmentlistadapter;

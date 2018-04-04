@@ -103,9 +103,7 @@ public class AddSegmentActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-
         getFragmentManager().popBackStack();
-
     }
 
 }

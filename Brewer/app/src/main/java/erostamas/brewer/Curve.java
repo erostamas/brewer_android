@@ -11,7 +11,6 @@ import java.util.ArrayList;
 public class Curve {
     Curve() {}
     Curve(String curveString) {
-        Log.i("brewer_file", "CUrve init from string: " + curveString);
         String[] separated = curveString.split(" ");
         _name = separated[0];
         if (separated.length > 1) {
@@ -31,7 +30,6 @@ public class Curve {
     private void setSegments(String curveString) {
         String[] segments = curveString.split(";");
         for (int i = 0; i < segments.length; i++) {
-            Log.i("brewer_file", "Segment created from string: " + segments[i]);
             Segment s = new Segment(segments[i]);
             _segments.add(s);
         }

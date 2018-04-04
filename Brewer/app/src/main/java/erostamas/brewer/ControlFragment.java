@@ -1,5 +1,6 @@
 package erostamas.brewer;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.GradientDrawable;
 import android.net.DhcpInfo;
@@ -13,9 +14,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.NumberPicker;
 
@@ -25,6 +23,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import erostamas.brewer.Views.Gauge;
@@ -45,9 +44,13 @@ public class ControlFragment extends Fragment {
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private ScheduledExecutorService scheduleTaskExecutor;
+    private static ScheduledExecutorService scheduleTaskExecutor;
     private MiscDataListAdapter miscDataListAdapter = new MiscDataListAdapter();
     private Timer uiUpdateTimer;
+    public static String currentCurveName = "";
+    public static String currentMode = "";
+    private static ScheduledFuture<?> scheduledFuture;
+    private static Context mContext;
     /**
      * Returns a new instance of this fragment for the given section
      * number.
@@ -61,6 +64,7 @@ public class ControlFragment extends Fragment {
     }
 
     public ControlFragment() {
+        mContext = getContext();
     }
 
     @Override
@@ -91,29 +95,7 @@ public class ControlFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final WifiManager manager = (WifiManager) getActivity().getApplicationContext().getSystemService(WIFI_SERVICE);
-        final DhcpInfo dhcp = manager.getDhcpInfo();
-        byte[] addressBytes = new byte[4];
-        for (int k = 0; k < 4; k++) {
-            addressBytes[k] = (byte) ((dhcp.gateway >> k * 8) & 0xFF);
-        }
-        try {
-            final InetAddress brewerIpAddress = InetAddress.getByAddress(addressBytes);
-            mainActivity.brewerAddress = brewerIpAddress.getHostAddress();
-            scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
-
-            scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
-                @Override
-                public void run() {
-                    String[] urls = {"http://" + brewerIpAddress.getHostAddress() + "/data.xml"};
-                    ProcessDataDownloader downloader = new ProcessDataDownloader();
-                    downloader.execute(urls);
-                }
-            }, 0, 1, TimeUnit.SECONDS); // or .MINUTES, .HOURS etc.
-            Log.i("Brewer", "6");
-        } catch (UnknownHostException ex) {
-            Log.e("brewer", "Unknown host exception");
-        }
+        restartDownloadTask();
 
         uiUpdateTimer = new Timer();
         uiUpdateTimer.schedule(new TimerTask() {
@@ -125,8 +107,24 @@ public class ControlFragment extends Fragment {
                     }
                 });
             }
-        }, 0, 1000); // 10000 is in miliseconds, this executes every 10 seconds
+        }, 0, 1000);
 
+    }
+
+    public static void restartDownloadTask() {
+        if (scheduledFuture != null) {
+            scheduledFuture.cancel(false);
+        }
+        scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
+
+        scheduledFuture = scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                String[] urls = {"http://" + mainActivity.brewerAddress + "/process_data.php"};
+                ProcessDataDownloader downloader = new ProcessDataDownloader(mContext);
+                downloader.execute(urls);
+            }
+        }, 0, 1, TimeUnit.SECONDS); // or .MINUTES, .HOURS etc.
     }
 
     private void updateUI() {

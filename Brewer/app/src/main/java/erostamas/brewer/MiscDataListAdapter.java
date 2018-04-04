@@ -58,8 +58,12 @@ public class MiscDataListAdapter extends BaseAdapter{
     @Override
     public void notifyDataSetChanged() {
         _miscData.clear();
-        _miscData.add(new MiscData("MODE", mainActivity.currentMode));
+        _miscData.add(new MiscData("MODE", ControlFragment.currentMode));
         _miscData.add(new MiscData("OUTPUT", Integer.toString(mainActivity.currentOutput)));
+        if(ControlFragment.currentMode.equals("AUTO")) {
+            _miscData.add(new MiscData("CURRENT CURVE", ControlFragment.currentCurveName));
+            _miscData.add(new MiscData("TIME TO NEXT SP", Integer.toString(mainActivity.timeToNextSetpoint)));
+        }
         super.notifyDataSetChanged();
     }
 }

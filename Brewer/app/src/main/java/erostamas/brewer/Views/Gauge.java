@@ -14,6 +14,8 @@ import android.view.View;
 import erostamas.brewer.R;
 
 import static android.graphics.Color.parseColor;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 
 /**
  * Created by etamero on 2017.09.17..
@@ -53,7 +55,7 @@ public class Gauge extends View {
     }
 
     public void set(double value) {
-        _value = value;
+        _value = min(max(_min, value), _max);
         invalidate();
     }
 

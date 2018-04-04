@@ -77,8 +77,6 @@ public class AddCurveActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-
         getFragmentManager().popBackStack();
-
     }
 }
