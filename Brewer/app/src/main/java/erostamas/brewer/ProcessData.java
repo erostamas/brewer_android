@@ -15,7 +15,7 @@ public class ProcessData {
         _output = output;
     }
     public void setSetpoint(int setpoint) { _setpoint = setpoint; }
-    public void setNextSetpoint(double nextSetpoint) { _nextSetpoint = nextSetpoint; }
+    public void setNextSetpoint(int nextSetpoint) { _nextSetpoint = nextSetpoint; }
     public void setTimeToNextSetpoint(int time) { _timeToNextSetpoint = time; }
     public void setCurrentCurveName(String curveName) { _currentCurveName = curveName; }
     public void validate() { _valid = true; }
@@ -33,7 +33,7 @@ public class ProcessData {
     public int getSetpoint() {
         return _setpoint;
     }
-    public double getNextSetpoint() {
+    public int getNextSetpoint() {
         return _nextSetpoint;
     }
     public int getTimeToNextSetpoint() {
@@ -48,7 +48,7 @@ public class ProcessData {
     private String _mode = "";
     private int _output = 0;
     private int _setpoint = 0;
-    private double _nextSetpoint = 0.0;
+    private int _nextSetpoint = 0;
     private int _timeToNextSetpoint = 0;
     private String _currentCurveName = "";
     private boolean _valid = false;

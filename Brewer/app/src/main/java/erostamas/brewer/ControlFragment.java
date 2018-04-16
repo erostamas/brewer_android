@@ -117,12 +117,19 @@ public class ControlFragment extends Fragment {
         }
         scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
 
+        //scheduledFuture = scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
+        //    @Override
+        //    public void run() {
+        //        String[] urls = {"http://" + mainActivity.brewerAddress + "/process_data.php"};
+        //        ProcessDataDownloader downloader = new ProcessDataDownloader(mContext);
+        //        downloader.execute(urls);
+        //    }
+        //}, 0, 1, TimeUnit.SECONDS); // or .MINUTES, .HOURS etc.
         scheduledFuture = scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                String[] urls = {"http://" + mainActivity.brewerAddress + "/process_data.php"};
-                ProcessDataDownloader downloader = new ProcessDataDownloader(mContext);
-                downloader.execute(urls);
+                BrewerDataDownloader downloader = new BrewerDataDownloader(mContext);
+                downloader.execute();
             }
         }, 0, 1, TimeUnit.SECONDS); // or .MINUTES, .HOURS etc.
     }
@@ -132,14 +139,14 @@ public class ControlFragment extends Fragment {
             return;
         }
         Gauge tempview = (Gauge) controlFragmentView.findViewById(R.id.current_temp);
-        tempview.set(currentTemperature);
+        tempview.set(BrewerData.temperature);
 
         miscDataListAdapter.notifyDataSetChanged();
 
         NumberPicker setpointview = (NumberPicker) controlFragmentView.findViewById(R.id.setpoint);
-        if (currentSetpoint != previousSetpoint) {
-            previousSetpoint = currentSetpoint;
-            setpointview.setValue(currentSetpoint);
+        if (BrewerData.setpoint != previousSetpoint) {
+            previousSetpoint = BrewerData.setpoint;
+            setpointview.setValue(BrewerData.setpoint);
         }
     }
 }
