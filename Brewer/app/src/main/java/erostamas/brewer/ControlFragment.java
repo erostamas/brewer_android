@@ -79,7 +79,7 @@ public class ControlFragment extends Fragment {
         setpointPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker numberPicker, int i, int i1) {
-                UdpMessage msg = new UdpMessage(mainActivity.brewerAddress, 50001, "setpoint " + Integer.toString(numberPicker.getValue()));
+                UdpMessage msg = new UdpMessage(BrewerData.brewerIpAddress, 50001, "setpoint " + Integer.toString(numberPicker.getValue()));
                 UdpSender sender = new UdpSender();
                 sender.execute(msg);
             }
